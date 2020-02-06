@@ -1,0 +1,75 @@
+       -----------------Teoría----------------
+
+1.- Es un conjunto de instrucciones de un programa destinadas a ser ejecutadas que almacena datos y secuencias.
+
+2.- Se refiere a la comunicacion entre 2 procesos un emisor y un receptor, envio y recepcion de mensajes.
+    Las comunicaciones punto a punto se combinan sobre la base de etiquetas y comunicaciones, 
+    los metodos en MPI son: MPI_Send y MPI_Recv.
+    Ejemplo:
+    ....
+    if (my_rank != 0) {
+        sprintf(msg, "Saludos desde el proceso %d de %d!", my_rank, comm_sz);
+        MPI_Send(msg, strlen(msg)+1, MPI_CHAR, 0, 0, MPI_COMM_WORLD);
+    } else {
+       printf("Saludos desde el proceso %d de %d", my_rank,comm_sz);
+       for (int q = 1; q < comm_sz; q++) {
+           MPI_Recv(msg, MAX_STRING, MPI_CHAR, q,0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+           printf("%sn", msg);
+       }
+    }
+    ....
+
+3.- Memoria Ram(principal).- Es una coleccion de posiciones, cada una capaz de almacenar tanto instrucciones
+    como datos, cada posicion consiste en una direccion(usado para acceder a aquella posicion) y su contenido.
+    Memoria Cache.- Un conjunto de posiciones de memoria a las que puede acceder el procesador mucho mas rapido
+    que otras posiciones.
+    Memoria Virtual.- Funciona como una memoria cache para un dispositivo de almacenamiento secundario,
+    explora el principio de localidad espacial y temporal, mantiene las partes activas de programas en
+    ejecucion de memoria.
+
+4.- Programacion en memoria distribuida: Cada proceso tiene su propio espacio de memoria.
+    Programacion en memoria compartida: Cada proceso espera su turno (cola) para hacer uso de la memoria.
+
+
+5.-  
+   MPI_Send( //Realiza el envio de un mensaje de un proceso fuente a otro destino
+          const void*,    //El búfer para enviar.
+          int,            //El número de elementos para enviar.
+          MPI_Datatype,   //El tipo de un elemento de búfer.
+          int,            //El rango del proceso MPI del destinatario.
+          int,            //La etiqueta para asignar al mensaje.
+          MPI_Comm,       //El comunicador en el que se realiza el envío estándar.);
+
+  MPI_Recv( //Rutina de recibimiento de un mendaje desde un proceso
+          void*,         //El búfer en el que recibe el mensaje.
+          int,           //El número de elementos en el búfer dado.
+          MPI_Datatype,  //El tipo de un elemento de búfer.
+          int,           //El rango del proceso de remitente MPI.
+          int,           //La etiqueta que se requiere del mensaje.
+          MPI_Comm,      //El comunicador en el que tiene lugar la comunicación.
+          MPI_Status*    //La variable en la que se almacena el estado de la operación de recepción. );
+
+ MPI_Reduce( //Es el medio por el cual el proceso MPI puede aplicar un cálculo de reducción.
+          const void*,   //Un puntero en el búfer para enviar para la reducción.,
+          void*,         //Un puntero en el búfer en el que se almacena el resultado de la reducción.
+          int count,     //El número de elementos en el búfer de envío, igual al del búfer de recepción.
+          MPI_Datatype,  //El tipo de elemento de búfer.
+          MPI_Op,        //La operación a aplicar para combinar mensajes recibidos en la reducción. 
+          int root,      //El rango del proceso MPI que recopilará el resultado de la reducción.
+          MPI_Comm       //El comunicador en el que tiene lugar la reducción.);
+
+ MPI_Allreduce( //Util en una situacion donde todos los procesos necesitan resultado de uan reduccion
+                //para continuar operando
+          const void*,   //Un puntero en el búfer para enviar para la reducción.
+          void*,         //Un puntero en el búfer en el que se almacena el resultado de la reducción.
+          int,           //El número de elementos en el búfer de envío, igual al del búfer de recepción.
+          MPI_Datatype,  //El tipo de elemento de búfer.
+          MPI_Op,        //La operación a aplicar para combinar mensajes recibidos en la reducción. 
+          MPI_Comm       //El comunicador en el que tiene lugar la reducción.);
+
+
+
+
+
+
+
